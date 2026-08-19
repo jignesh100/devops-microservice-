@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: 405804179058.dkr.ecr.ap-south-1.amazonaws.com/user-service:v1
+          ports:
+            - containerPort: 5000
+          env:
+            - name: ORDER_SERVICE_URL
+              value: http://order-service:5001

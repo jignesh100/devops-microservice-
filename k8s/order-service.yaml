@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: 405804179058.dkr.ecr.ap-south-1.amazonaws.com/order-service:v1
+          ports:
+            - containerPort: 5001
+          env:
+            - name: DB_HOST
+              value: postgres
+            - name: DB_NAME
+              value: ordersdb
+            - name: DB_USER
+              value: postgres
+            - name: DB_PASSWORD
+              value: password
+            - name: DB_PORT
+              value: "5432"
