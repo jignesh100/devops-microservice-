@@ -1,4 +1,4 @@
-name: AWS OIDC Debug
+name: Build and Push to ECR
 
 on:
   push:
@@ -9,15 +9,48 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  AWS_REGION: ap-south-1
+  AWS_ACCOUNT_ID: "405804179058"
+
 jobs:
-  debug:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get GitHub OIDC token
-        run: |
-          TOKEN=$(curl -s \
-            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value')
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-          echo "$TOKEN" | cut -d '.' -f2 | base64 -d 2>/dev/null | jq .
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::405804179058:role/GitHubActions-EKS-Deploy
+          aws-region: ap-south-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push user-service
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build \
+            -t $REGISTRY/user-service:$IMAGE_TAG \
+            ./user-service
+
+          docker push \
+            $REGISTRY/user-service:$IMAGE_TAG
+
+      - name: Build and push order-service
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build \
+            -t $REGISTRY/order-service:$IMAGE_TAG \
+            ./order-service
+
+          docker push \
+            $REGISTRY/order-service:$IMAGE_TAG
