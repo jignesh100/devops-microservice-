@@ -54,3 +54,13 @@ jobs:
 
           docker push \
             $REGISTRY/order-service:$IMAGE_TAG
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region $AWS_REGION \
+            --name devops-microservice-cluster
+
+      - name: Test EKS access
+        run: |
+          kubectl get nodes
+          kubectl get pods -A
