@@ -1,4 +1,4 @@
-name: AWS Authentication Test
+name: AWS OIDC Debug
 
 on:
   push:
@@ -10,19 +10,14 @@ permissions:
   contents: read
 
 jobs:
-  aws-auth-test:
+  debug:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::405804179058:role/GitHubActions-EKS-Deploy
-          aws-region: ap-south-1
-
-      - name: Test AWS authentication
+      - name: Get GitHub OIDC token
         run: |
-          aws sts get-caller-identity
+          TOKEN=$(curl -s \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value')
+
+          echo "$TOKEN" | cut -d '.' -f2 | base64 -d 2>/dev/null | jq .
