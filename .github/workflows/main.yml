@@ -64,3 +64,50 @@ jobs:
         run: |
           kubectl get nodes
           kubectl get pods -A
+      - name: Deploy PostgreSQL
+        run: |
+          kubectl apply -f k8s/postgres-pvc.yaml
+          kubectl apply -f k8s/postgres-service.yaml
+          kubectl apply -f k8s/postgres.yaml
+
+      - name: Deploy application services
+        run: |
+          kubectl apply -f k8s/user-service-svc.yaml
+          kubectl apply -f k8s/order-service-svc.yaml
+          kubectl apply -f k8s/user-service.yaml
+          kubectl apply -f k8s/order-service.yaml
+
+      - name: Update user-service image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          kubectl set image deployment/user-service \
+            user-service=$REGISTRY/user-service:$IMAGE_TAG
+
+      - name: Update order-service image
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          kubectl set image deployment/order-service \
+            order-service=$REGISTRY/order-service:$IMAGE_TAG
+
+      - name: Wait for user-service rollout
+        run: |
+          kubectl rollout status deployment/user-service --timeout=180s
+
+      - name: Wait for order-service rollout
+        run: |
+          kubectl rollout status deployment/order-service --timeout=180s
+
+      - name: Verify deployment
+        run: |
+          echo "===== DEPLOYMENTS ====="
+          kubectl get deployments
+
+          echo "===== PODS ====="
+          kubectl get pods -o wide
+
+          echo "===== SERVICES ====="
+          kubectl get svc
