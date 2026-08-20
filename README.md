@@ -44,13 +44,13 @@ GitHub Actions (CI/CD)
 └──────┬───────┘   └───────┬───────┘   └────────┬─────────┘
        │                   │                     │
        ▼                   ▼                     ▼
-   ClusterIP           ClusterIP                PVC
+   load balancer IP     ClusterIP                PVC
     Service             Service                  │
                                                  ▼
                                                 PV
                                                  │
                                                  ▼
-                                            Amazon EBS```
+                                            Amazon EBS
 
 ------------------------------------------------------------------------
 
