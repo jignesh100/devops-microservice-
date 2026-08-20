@@ -35,9 +35,9 @@ with values only in your private deployment configuration or local environment. 
        Docker Build                AWS OIDC
               |                         |
               v                         v
-        Amazon ECR              IAM Role
+        Amazon ECR                 IAM Role
               |                 GitHubActions-
-              |                 EKS-Deploy
+              |                  EKS-Deploy
               |                         |
               +------------+------------+
                            |
@@ -45,15 +45,19 @@ with values only in your private deployment configuration or local environment. 
                     Amazon EKS Cluster
                 devops-microservice-cluster
                            |
-             +-------------+-------------+
-             |                           |
-             v                           v
-        user-service               order-service
-             |                           |
-             +-------------+-------------+
-                           |
-                           v
-                      Kubernetes
+          +----------------+----------------+
+          |                |                |
+          v                v                v
+    user-service     order-service      PostgreSQL
+                                             |
+                                             v
+                                   PersistentVolumeClaim
+                                             |
+                                             v
+                                     Persistent Volume
+                                             |
+                                             v
+                                      Persistent Storage
 ```
 
 ------------------------------------------------------------------------
@@ -656,6 +660,15 @@ Amazon EKS
    +--> order-service
    |
    +--> PostgreSQL
+          |
+          v
+   PersistentVolumeClaim
+          |
+          v
+    Persistent Volume
+          |
+          v
+    Persistent Storage
 ```
 
 ------------------------------------------------------------------------
