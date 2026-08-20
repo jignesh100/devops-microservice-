@@ -23,41 +23,58 @@ with values only in your private deployment configuration or local environment. 
 # 🏗️ Architecture
 
 ``` text
-                    GitHub Repository
-                           |
-                           | git push
-                           v
-                    GitHub Actions
-                           |
-              +------------+------------+
-              |                         |
-              v                         v
-       Docker Build                AWS OIDC
-              |                         |
-              v                         v
-        Amazon ECR                 IAM Role
-              |                 GitHubActions-
-              |                  EKS-Deploy
-              |                         |
-              +------------+------------+
-                           |
-                           v
-                    Amazon EKS Cluster
-                devops-microservice-cluster
-                           |
-          +----------------+----------------+
-          |                |                |
-          v                v                v
-    user-service     order-service      PostgreSQL
-                                             |
-                                             v
-                                   PersistentVolumeClaim
-                                             |
-                                             v
-                                     Persistent Volume
-                                             |
-                                             v
-                                      Persistent Storage
+Developer
+    |
+    | git push
+    v
+GitHub Repository
+    |
+    v
+GitHub Actions (CI/CD)
+    |
+    +---------------------------+
+    |                           |
+    | Docker Build              | AWS OIDC Authentication
+    |                           |
+    v                           v
+Amazon ECR                  IAM Role (GitHubActions-EKS-Deploy)
+    |                           |
+    +-------------+-------------+
+                  |
+                  v
+        Amazon EKS Cluster
+   (devops-microservice-cluster)
+                  |
+      +-----------+-----------+
+      |                       |
+      | Kubernetes Services   |
+      |                       |
++-----+------+        +--------+-------+
+| user-service|        | order-service |
+| Deployment  |        | Deployment    |
++------+------|        +--------+------+
+       |                        |
+       v                        v
+  ClusterIP Service       ClusterIP Service
+               \           /
+                \         /
+                 \       /
+                  \     /
+                   v   v
+                PostgreSQL
+                 Deployment
+                      |
+                ClusterIP Service
+                      |
+                      v
+          PersistentVolumeClaim (PVC)
+                      |
+                      v
+          Persistent Volume (PV)
+                      |
+                      v
+          Amazon EBS Persistent Storage
+
 ```
 
 ------------------------------------------------------------------------
