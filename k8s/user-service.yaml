@@ -31,7 +31,7 @@ spec:
 
           readinessProbe:
             httpGet:
-              path: /healthz
+              path: /health
               port: 5000
 
             initialDelaySeconds: 10
