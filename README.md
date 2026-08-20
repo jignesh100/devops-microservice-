@@ -53,7 +53,7 @@ GitHub Actions (CI/CD)
                                             Amazon EBS
 
 ------------------------------------------------------------------------
-.
+
 ## 📁 Project Structure
 
 ``` text
