@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: busybox-crash
+  name: busybox-stable
 spec:
   containers:
     - name: busybox
@@ -10,5 +10,6 @@ spec:
         - /bin/sh
         - -c
         - |
+          sleep 5
           echo "Starting application successfully..."
           tail -f /dev/null
