@@ -1,13 +1,29 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: busybox-crash
+  name: busybox-crash-demo
+  namespace: default
 spec:
-  restartPolicy: Always
-  containers:
-    - name: busybox
-      image: busybox:latest
-      command:
-        - /bin/sh
-        - -c
-        - sleep 3600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox-crash-demo
+  template:
+    metadata:
+      labels:
+        app: busybox-crash-demo
+    spec:
+      containers:
+        - name: busybox
+          image: busybox:1.36
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Starting application..."
+              sleep 5
+              echo "ERROR: Application failed during startup"
+              exit 1
+
+
+# tail -f /dev/null
