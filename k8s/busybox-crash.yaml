@@ -3,8 +3,8 @@ kind: Pod
 metadata:
   name: busybox-crash
 spec:
+  restartPolicy: Always
   containers:
   - name: busybox
     image: busybox
     command: ["/bin/sh", "-c", "sleep 3600"]
-  restartPolicy: Always
