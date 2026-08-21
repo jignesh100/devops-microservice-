@@ -10,7 +10,7 @@ Actions**, **Amazon ECR**, and **AWS IAM OIDC**.
 
 This README intentionally uses placeholders for AWS account IDs, GitHub owner/repository names, and other account-specific identifiers.
 
-Before publishing the repository, replace placeholders such as:
+Before publishing the repository, replace placeholders such as::
 
 ```text
 <AWS_ACCOUNT_ID>
