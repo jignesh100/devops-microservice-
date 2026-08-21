@@ -1,29 +1,14 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
-  name: busybox-crash-demo
-  namespace: default
+  name: busybox-crash
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: busybox-crash-demo
-  template:
-    metadata:
-      labels:
-        app: busybox-crash-demo
-    spec:
-      containers:
-        - name: busybox
-          image: busybox:1.36
-          command:
-            - /bin/sh
-            - -c
-            - |
-              echo "Starting application..."
-              sleep 5
-              echo "ERROR: Application failed during startup"
-              tail -f /dev/null
-              # exit 1
-
-
+  containers:
+    - name: busybox
+      image: busybox:1.36
+      command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Starting application successfully..."
+          tail -f /dev/null
