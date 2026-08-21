@@ -6,5 +6,5 @@ spec:
   restartPolicy: Always
   containers:
   - name: busybox
-    image: busybox
+    image: busybox:latest
     command: ["/bin/sh", "-c", "sleep 3600"]
