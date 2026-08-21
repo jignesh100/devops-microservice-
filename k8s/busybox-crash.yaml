@@ -23,7 +23,7 @@ spec:
               echo "Starting application..."
               sleep 5
               echo "ERROR: Application failed during startup"
-              exit 1
+              tail -f /dev/null
+              # exit 1
 
 
-# tail -f /dev/null
